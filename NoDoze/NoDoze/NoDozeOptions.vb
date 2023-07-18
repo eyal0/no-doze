@@ -273,13 +273,35 @@
     End Sub
 
     Sub UpdateIcon(full As Boolean, Optional reason As String = "")
-        If full Then
-            NotifyIcon1.Icon = My.Resources.coffee_full
-            NotifyIcon1.Text = Me.Text + " - Awake for: " + reason
-        Else
-            NotifyIcon1.Icon = My.Resources.coffee_empty
-            NotifyIcon1.Text = Me.Text + " - Sleep allowed"
-        End If
+        Dim attemptedString As String = String.Empty
+
+        Try
+            'Adding logic to truncate text to 64 characters
+            If full Then
+                Dim txtToSet As String = Me.Text + " - Awake for: " + reason
+                attemptedString = txtToSet
+
+                If txtToSet.Length > 64 Then
+                    txtToSet = txtToSet.Substring(0, 63)
+                End If
+
+                NotifyIcon1.Icon = My.Resources.coffee_full
+                NotifyIcon1.Text = txtToSet
+            Else
+                Dim txtToSet As String = Me.Text + " - Sleep allowed"
+                attemptedString = txtToSet
+
+                If txtToSet.Length > 64 Then
+                    txtToSet = txtToSet.Substring(0, 63)
+                End If
+
+                NotifyIcon1.Icon = My.Resources.coffee_empty
+                NotifyIcon1.Text = txtToSet
+            End If
+
+        Catch ex As Exception
+            Throw New Exception("Attempted String Error: " + attemptedString, ex)
+        End Try
     End Sub
 #End Region
 
